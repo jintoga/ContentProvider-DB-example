@@ -1,12 +1,17 @@
 package com.example.dat.contentprovider1.Adapter;
 
+import android.content.ContentResolver;
 import android.content.Context;
+import android.database.DatabaseUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.dat.contentprovider1.ContentProvider.MyContentProvider;
+import com.example.dat.contentprovider1.Database.AnimalTable;
 import com.example.dat.contentprovider1.Model.Animal;
 import com.example.dat.contentprovider1.R;
 
@@ -30,6 +35,26 @@ public class CustomAdapterAnimals extends BaseAdapter {
 
     public void addAll(ArrayList<Animal> data) {
         animals.addAll(data);
+    }
+
+    public void remove(int position) {
+        if (position != -1) {
+            removeFromDB(position);
+            animals.remove(position);
+            notifyDataSetChanged();
+        }
+    }
+
+    private void removeFromDB(int position) {
+
+
+        if (animals.size() > 0 && animals.get(position) != null) {
+            ContentResolver contentResolver = context.getContentResolver();
+
+            int key_id = animals.get(position).getKey_id();
+            contentResolver.delete(MyContentProvider.CONTENT_URI, AnimalTable.KEY_ID + " = " + String.valueOf(key_id), null);
+
+        }
     }
 
     @Override

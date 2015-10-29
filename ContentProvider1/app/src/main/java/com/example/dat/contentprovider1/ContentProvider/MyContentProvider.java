@@ -6,6 +6,7 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
@@ -24,7 +25,7 @@ import java.util.HashMap;
 public class MyContentProvider extends ContentProvider {
 
     private MyDBHelper myDBHelper;
-    private SQLiteDatabase database;
+    private static SQLiteDatabase database;
 
     private static final String PROVIDER_NAME = "com.example.dat.contentprovider.Animals";
     private static final String URI = "content://" + PROVIDER_NAME + "/animals";
@@ -143,5 +144,11 @@ public class MyContentProvider extends ContentProvider {
         }
         getContext().getContentResolver().notifyChange(uri, null);
         return rowsUpdated;
+    }
+
+    public static long getNumbOfEntries() {
+        long numb = 0;
+        numb = DatabaseUtils.queryNumEntries(database, AnimalTable.TABLE_NAME);
+        return numb;
     }
 }
